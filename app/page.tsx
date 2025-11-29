@@ -74,6 +74,7 @@ export default function App() {
             <img src={songs[currentSong].img} alt="cover" />
             <div className="titleTrack">
               <p>{songs[currentSong].title}</p>
+              <p>{songs[currentSong].title}</p>
               <span>{songs[currentSong].artist}</span>
             </div>
 
