@@ -5,28 +5,51 @@
 }
 
 .main {
+  position: relative;
   width: 100%;
   height: 100vh;
-  background-color: #e6e4e0d3;
-
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  background-color: #202515;
+}
 
+.main::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("/scott.png");
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.12);
+  filter: blur(48px) saturate(140%) contrast(105%);
+  opacity: 0.95;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.main::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(32, 37, 21, 0.18), rgba(32, 37, 21, 0.55));
+  z-index: 1;
+  pointer-events: none;
 }
 
 .mainCard {
+  position: relative;
+  z-index: 2;
   border-radius: 20px;
   width: 350px;
   height: 95vh;
   background-color: #e8e6e3;
-  box-shadow: 0 0 20px -10px rgba(0, 0, 0, 0.379);
-
+  box-shadow: 0 0 20px -10px rgba(0, 0, 0, 0.38);
   display: flex;
-  align-items: center;
-  justify-content: start;
   flex-direction: column;
-
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .nav {
@@ -50,7 +73,7 @@
   align-items: center;
   justify-content: space-between;
   flex-direction: column;
-  gap: 20;
+  gap: 20px;
 }
 
 .imgPlay img {
@@ -142,7 +165,7 @@
 }
 
 .controllCard #shuffle {
-  /* left: 0px; */
+
   top: 12px;
 }
 
