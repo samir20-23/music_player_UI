@@ -1,6 +1,7 @@
+// App.tsx
 "use client"
 
-import React, { useState, useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import './main.css'
 
 const songs = [
@@ -14,19 +15,33 @@ export default function App() {
   const [currentSong, setCurrentSong] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [sliderValue, setSliderValue] = useState(0)
-  const audioRef = useRef<HTMLAudioElement>(null)
- 
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+
+  const [currentBg, setCurrentBg] = useState(songs[0].img)
+  const [prevBg, setPrevBg] = useState<string | null>(null)
+  const [showPrevBg, setShowPrevBg] = useState(false)
+
+  const [isFading, setIsFading] = useState(false)
+
+  const clearPrevTimeoutRef = useRef<number | null>(null)
+  const changeSongTimeoutRef = useRef<number | null>(null)
+
   useEffect(() => {
     setMounted(true)
+    return () => {
+      if (clearPrevTimeoutRef.current) window.clearTimeout(clearPrevTimeoutRef.current)
+      if (changeSongTimeoutRef.current) window.clearTimeout(changeSongTimeoutRef.current)
+    }
   }, [])
- 
+
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
 
-    const updateSlider = () => setSliderValue((audio.currentTime / audio.duration) * 100 || 0)
+    const updateSlider = () => {
+      setSliderValue((audio.currentTime / (audio.duration || 1)) * 100 || 0)
+    }
     audio.addEventListener("timeupdate", updateSlider)
-
     return () => audio.removeEventListener("timeupdate", updateSlider)
   }, [currentSong])
 
@@ -43,37 +58,87 @@ export default function App() {
   }
 
   const changeSong = (direction: "next" | "prev") => {
-    setCurrentSong(prev => {
-      if (direction === "next") return (prev + 1) % songs.length
-      else return (prev - 1 + songs.length) % songs.length
-    })
+    const newIndex = direction === "next"
+      ? (currentSong + 1) % songs.length
+      : (currentSong - 1 + songs.length) % songs.length
+
+    setPrevBg(currentBg)
+    setShowPrevBg(true)
+
+    setIsFading(true)
+
+    const audio = audioRef.current
+    if (audio) {
+      audio.pause()
+      audio.currentTime = 0
+    }
     setIsPlaying(false)
     setSliderValue(0)
+
+    changeSongTimeoutRef.current = window.setTimeout(() => {
+      setCurrentSong(newIndex)
+      setCurrentBg(songs[newIndex].img)
+
+      setIsFading(false)
+
+      clearPrevTimeoutRef.current = window.setTimeout(() => {
+        setShowPrevBg(false)
+        setPrevBg(null)
+      }, 700)
+    }, 300)
   }
 
   const handleSlider = (e: React.ChangeEvent<HTMLInputElement>) => {
     const audio = audioRef.current
     if (!audio) return
     const value = Number(e.target.value)
-    audio.currentTime = (audio.duration * value) / 100
+    audio.currentTime = (audio.duration || 1) * (value / 100)
     setSliderValue(value)
   }
 
-  if (!mounted) return null  
+  if (!mounted) return null
+
   return (
     <div className="main">
+      {prevBg && (
+        <div
+          className="bgLayer prev"
+          style={{ backgroundImage: `url(${prevBg})`, opacity: showPrevBg ? 1 : 0 }}
+          aria-hidden
+        />
+      )}
+      <div
+        className="bgLayer current"
+        style={{ backgroundImage: `url(${currentBg})`, opacity: showPrevBg ? 0 : 1 }}
+        aria-hidden
+      />
+
+      <div className="bgOverlay" aria-hidden />
+
       <div className="mainCard">
         <div className="nav">
           <div><i className="fa-solid fa-chevron-left"></i></div>
-          <div><p>Travis Scott</p></div>
+          <div><p>{songs[currentSong].artist}</p></div>
           <div><i className="fa-solid fa-ellipsis-vertical"></i></div>
         </div>
 
         <div className="playCard">
           <div className="imgPlay">
-            <img src={songs[currentSong].img} alt="cover" />
-            <div className="titleTrack">
-              <p>{songs[currentSong].title}</p>
+            <img
+              src={songs[currentSong].img}
+              alt="cover"
+              className={`cover ${isFading ? "fade" : ""}`}
+            />
+            <div className="hoverImg">
+
+            </div>
+            <div className={`titleTrack ${isPlaying ? "playing" : ""}`}>
+
+              <p style={{ backgroundImage: `url(${songs[currentSong].img})` }}
+                aria-hidden >
+
+                {songs[currentSong].title}</p>
+
               <p>{songs[currentSong].title}</p>
               <span>{songs[currentSong].artist}</span>
             </div>
@@ -85,20 +150,28 @@ export default function App() {
               value={sliderValue}
               onChange={handleSlider}
               className="progress-slider"
+              style={{
+                background: `linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(132, 126, 121, 0.3) ${sliderValue}%, rgba(161,155,149,0.3) ${sliderValue}%, rgba(161,155,149,0.3) 100%)`
+              }}
             />
+
+
           </div>
 
           <div className="controllCard">
-            <i className="fa-solid fa-shuffle" id='shuffle'></i>
+            <i className="fa-solid fa-shuffle" id='shuffle' onClick={() => changeSong("next")}></i>
             <i className="fa-solid fa-backward" id='backward' onClick={() => changeSong("prev")}></i>
             <i className={`fa-solid ${isPlaying ? "fa-pause" : "fa-play"}`} id='play' onClick={togglePlay}></i>
             <i className="fa-solid fa-forward" id='forward' onClick={() => changeSong("next")}></i>
             <div className="circle"></div>
+
           </div>
         </div>
 
-        <audio ref={audioRef} src={songs[currentSong].src}></audio>
+        <audio ref={audioRef} src={songs[currentSong].src} />
       </div>
+
+
     </div>
   )
 }

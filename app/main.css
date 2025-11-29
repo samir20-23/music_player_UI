@@ -2,6 +2,7 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+
 }
 
 .main {
@@ -15,22 +16,28 @@
   background-color: #202515;
 }
 
-.main::before {
-  content: "";
+.bgLayer {
   position: absolute;
   inset: 0;
-  background-image: url("/scott.png");
   background-size: cover;
   background-position: center;
   transform: scale(1.12);
   filter: blur(48px) saturate(140%) contrast(105%);
-  opacity: 0.95;
+  transition: opacity 700ms ease;
   z-index: 0;
   pointer-events: none;
+  opacity: 0;
 }
 
-.main::after {
-  content: "";
+.bgLayer.current {
+  z-index: 0;
+}
+
+.bgLayer.prev {
+  z-index: 0;
+}
+
+.bgOverlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, rgba(32, 37, 21, 0.18), rgba(32, 37, 21, 0.55));
@@ -43,14 +50,16 @@
   z-index: 2;
   border-radius: 20px;
   width: 350px;
-  height: 95vh;
-  background-color: #e8e6e3;
+  background-color: #efe9eef5;
   box-shadow: 0 0 20px -10px rgba(0, 0, 0, 0.38);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  margin: 30px 0 30px 0;
+  filter: blur(0.1px);
 }
+
 
 .nav {
   width: 100%;
@@ -60,12 +69,26 @@
   padding: 22px;
 }
 
+.nav div,
+p {
+  opacity: 0.8;
+  text-transform: capitalize;
+  text-shadow: 0 0 0.5px rgb(0, 0, 0);
+  font-family: 'Circular', 'Circular Spotify', Helvetica, Arial, sans-serif;
+
+}
+
+.nav div i {
+  cursor: pointer;
+}
+
 .playCard {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 30px;
+  gap: 22px;
+  padding-bottom: 12px;
 }
 
 .imgPlay {
@@ -73,15 +96,32 @@
   align-items: center;
   justify-content: space-between;
   flex-direction: column;
-  gap: 12px;
+  gap: 4px;
+  cursor: pointer;
 }
 
-.imgPlay img {
-  width: 250px;
-  height: 250px;
+.imgPlay img.cover {
+  width: 280px;
+  height: 280px;
   border: 1px solid rgba(0, 0, 0, 0.185);
   border-radius: 20px;
   box-shadow: 0 0 13px -12px black;
+  object-fit: cover;
+  transition: opacity 300ms ease, transform 300ms ease;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: 300ms ease;
+
+}
+
+.imgPlay img.cover:hover {
+  transition: 300ms ease;
+  padding: 4px;
+}
+
+.imgPlay img.cover.fade {
+  opacity: 0;
+  transform: translateY(6px) scale(0.98);
 }
 
 .imgPlay .titleTrack {
@@ -93,9 +133,7 @@
   width: 270px;
   overflow: hidden;
   position: relative;
-
 }
-
 
 .titleTrack p {
   color: rgb(52, 52, 52);
@@ -103,12 +141,41 @@
   white-space: nowrap;
   overflow: hidden;
   width: max-content;
-  animation: slideText 7s infinite linear;
+  animation-play-state: paused;
+
+  margin: 0;
+
 }
 
+.titleTrack p:first-child {
+  font-family: 'Circular', 'Circular Spotify', Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  filter: blur(0.4px);
+  animation: slideText 12s infinite linear;
+  background-size: 90%;
+  background-position: center;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation-play-state: paused;
+
+
+}
+
+.titleTrack p:nth-child(2) {
+  font-family: 'Circular', 'Circular Spotify', Helvetica, Arial, sans-serif;
+  font-weight: 200;
+  filter: blur(0.3px);
+  animation: slideText 8s infinite linear;
+  font-size: 14px;
+}
+
+.titleTrack.playing p {
+  animation-play-state: running;
+}
 
 .titleTrack span {
   color: rgb(121, 121, 121);
+  margin-top: 6px;
 }
 
 .imgPlay .progress-slider {
@@ -134,13 +201,14 @@
   border-radius: 200px;
   cursor: pointer;
   margin-top: -6px;
+  opacity: 1;
 }
 
 .progress-slider::-moz-range-thumb {
   width: 18px;
   height: 18px;
   background: #222;
-  border-radius: 50 percent;
+  border-radius: 50%;
   cursor: pointer;
 }
 
@@ -160,10 +228,17 @@
   background-color: white;
   position: relative;
   border-radius: 200px;
+  transition: 300ms ease;
+  box-shadow: 0 0 19px -10px rgba(0, 0, 0, 0.13);
 }
 
 .controllCard i {
+  cursor: pointer;
   position: absolute;
+}
+
+.controllCard i:hover {
+  opacity: 0.8;
 }
 
 .controllCard .circle {
@@ -174,21 +249,25 @@
 }
 
 .controllCard #shuffle {
-
   top: 12px;
 }
 
 .controllCard #backward {
   left: 12px;
-  /* top: 12px; */
 }
 
 .controllCard #play {
-  /* left: 55px;  */
+  left: 46%;
 }
 
 .controllCard #forward {
   left: 93px;
+}
+
+.controllCard:hover {
+  transition: 300ms ease;
+  box-shadow: 0 0 19px -5px rgba(0, 0, 0, 0.224);
+  cursor: pointer;
 }
 
 @keyframes slideText {
