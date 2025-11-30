@@ -1,0 +1,130 @@
+:root {
+    --background-color: #b3b1b1;
+    --text-color: #ffffff;
+    --subdued-text-color: #000000;
+    --hover-background: #3e3e3e;
+    --divider-color: #000000;
+    --border-radius: 4px;
+    --menu-padding: 4px;
+    --item-height: 32px;
+    --icon-size: 16px;
+}
+
+.context-menu-container {
+    position: absolute;
+    top: 14px;
+    left: 92px;
+    z-index: 1000;
+    padding: var(--menu-padding);
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    min-width: 250px;
+}
+
+.close-button {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: none;
+    color: var(--subdued-text-color, #b3b3b3);
+    font-size: 1.25rem;
+    font-weight: 500;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    z-index: 10;
+
+    transform: translate(-4px, 4px);
+    border-radius: var(--border-radius, 4px); 
+}
+
+.close-button:hover {
+    color: var(--text-color, #ffffff);
+    background-color: var(--hover-background, #3e3e3e);
+}
+
+.context-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+}
+
+.menu-item {
+    position: relative;
+}
+
+.menu-button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: var(--item-height);
+    padding: 0 8px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+    color: var(--subdued-text-color);
+    font-size: 0.875rem;
+    font-weight: 400;
+    white-space: nowrap;
+    border-radius: 2px;
+    transition: background-color 0.1s ease-in-out;
+}
+
+.menu-button:hover,
+.menu-button:focus-visible {
+    background-color: var(--hover-background);
+    color: var(--text-color);
+}
+
+.menu-button svg {
+    fill: currentColor;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    margin-right: 12px;
+}
+
+.menu-text {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.menu-divider {
+    height: 1px;
+    background-color: var(--divider-color);
+    margin: 4px 0;
+}
+
+.menu-flyout .menu-button {
+    justify-content: space-between;
+}
+
+.menu-content {
+    display: flex;
+    align-items: center;
+}
+
+.flyout-arrow {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.flyout-arrow svg {
+    transform: rotate(90deg);
+    margin-right: 0;
+    fill: var(--subdued-text-color);
+    width: 12px;
+    height: 12px;
+}
+
+.menu-button:hover .flyout-arrow svg {
+    fill: var(--text-color);
+}

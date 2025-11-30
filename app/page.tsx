@@ -1,6 +1,5 @@
-// App.tsx
 "use client"
-
+import Menu from "./components/menu";
 import React, { useEffect, useRef, useState } from "react"
 import './main.css'
 
@@ -22,6 +21,7 @@ export default function App() {
   const [showPrevBg, setShowPrevBg] = useState(false)
 
   const [isFading, setIsFading] = useState(false)
+  const [showMenu, setShowMenu] = useState(false)
 
   const clearPrevTimeoutRef = useRef<number | null>(null)
   const changeSongTimeoutRef = useRef<number | null>(null)
@@ -96,6 +96,10 @@ export default function App() {
     setSliderValue(value)
   }
 
+  const toggleMenu = () => {
+    setShowMenu(prev => !prev)
+  }
+
   if (!mounted) return null
 
   return (
@@ -117,11 +121,12 @@ export default function App() {
 
       <div className="mainCard">
         <div className="nav">
+          {showMenu && <Menu onClose={() => setShowMenu(false)} />}
           <div><i className="fa-solid fa-chevron-left"></i></div>
           <div><p>{songs[currentSong].artist}</p></div>
-          <div><i className="fa-solid fa-ellipsis-vertical"></i></div>
+          <div><i className="fa-solid fa-ellipsis-vertical" onClick={toggleMenu}></i></div>
         </div>
-
+ 
         <div className="playCard">
           <div className="imgPlay">
             <img

@@ -59,7 +59,7 @@
   margin: 30px 0 30px 0;
   filter: blur(0.1px);
 }
-
+ 
 
 .nav {
   width: 100%;
@@ -81,7 +81,9 @@ p {
 .nav div i {
   cursor: pointer;
 }
-
+.nav div .fa-chevron-left:hover{
+  opacity: 0.8;
+}
 .playCard {
   display: flex;
   align-items: center;
@@ -151,7 +153,7 @@ p {
   font-family: 'Circular', 'Circular Spotify', Helvetica, Arial, sans-serif;
   font-weight: 700;
   filter: blur(0.4px);
-  animation: slideText 12s infinite linear;
+  animation: slideText 19s infinite linear;
   background-size: 90%;
   background-position: center;
   -webkit-background-clip: text;
@@ -165,7 +167,7 @@ p {
   font-family: 'Circular', 'Circular Spotify', Helvetica, Arial, sans-serif;
   font-weight: 200;
   filter: blur(0.3px);
-  animation: slideText 8s infinite linear;
+  animation: slideText 10s infinite linear;
   font-size: 14px;
 }
 
@@ -190,6 +192,7 @@ p {
   background: #a19b95;
   border-radius: 10px;
   opacity: 0.8;
+  
 }
 
 .progress-slider::-webkit-slider-thumb {
